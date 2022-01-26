@@ -47,6 +47,7 @@ const App = () => {
 	const [miniLanding, setMiniLanding] = useState(null)
 	const [currentGroup, setCurrentGroup] = useState(null)
 	const [isAdmin, setIsAdmin] = useState(null)
+	const [isCurrentlySubscribed, setIsCurrentlySubscribed] = useState(null)
 
 	const [vkGroup, setVkGroup] = useState(null)
 	const [subscribers, setSubscribers] = useState(null)
@@ -89,12 +90,17 @@ const App = () => {
 		let response = await smartRedirect()
 		console.log(response)
 		if(response.data.success){
+			console.log("response.data")
 			console.log(response.data.page)
+			console.log(response.data)
 			if(response.data.page === "vk_site_landing" || response.data.page === "simple_vk_landing"){
 				setAccessToken(response.data.key)
 				setLanding(response.data.landing)
 				setIsAdmin(response.data.isAdmin)
 				setProject(response.data.project)
+				if(response.data.isCurrentlySubscribed !== undefined){
+					setIsCurrentlySubscribed(response.data.isCurrentlySubscribed)
+				}
 			}
 			if(response.data.page === "simple_vk_landing"){
 				let { vk_group, proxy, vk_group_info, subscribers, force, phone, email, name } = response.data
@@ -334,7 +340,7 @@ const App = () => {
 					<ScreenSpinner size='large' id='loader' />
 					<Home id='home' topPadding={topPadding} addToCommunity={addToCommunity} join={join} />
 					<GroupAdmin id='group_admin' topPadding={topPadding} join={join}/>
-					<SimpleVkLandingContainer setError={setError} proxy={proxy} force={force} vkGroup={vkGroup} vkGroupInfo={vkGroupInfo} subscribers={subscribers} email={email} phone={phone} name={name} accessToken={accessToken} sendStats={sendStats} openForm={openForm} isAdmin={isAdmin} id='simple_vk_landing' topPadding={topPadding} landing={landing}/>
+					<SimpleVkLandingContainer isCurrentlySubscribed={isCurrentlySubscribed} setError={setError} proxy={proxy} force={force} vkGroup={vkGroup} vkGroupInfo={vkGroupInfo} subscribers={subscribers} email={email} phone={phone} name={name} accessToken={accessToken} sendStats={sendStats} openForm={openForm} isAdmin={isAdmin} id='simple_vk_landing' topPadding={topPadding} landing={landing}/>
 					<VkSiteLandingContainer accessToken={accessToken} sendStats={sendStats} openForm={openForm} isAdmin={isAdmin} landing={landing} id='vk_site_landing' topPadding={topPadding} />
 					<CreateProject topPadding={topPadding} id='create_project' go={myGo} setError={setError} createProject={createProjectEvent}/>
 					<Projects topPadding={topPadding} id='projects' go={go} projects={projects} toProject={toProject} deleteProject={deleteProjectEvent} deleteAccess={deleteAccessEvent}/>

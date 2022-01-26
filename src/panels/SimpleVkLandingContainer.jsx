@@ -149,9 +149,16 @@ const SimpleVkLandingContainer = (props) => {
                 }
             }
         }
-        bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": parseInt(props.vkGroup.group)})
-            .then(r => {
-                console.log(r)
+        let groupId = parseInt(props.vkGroup.group)
+        let proxyKey = `id${props.proxy.id}`
+        let param = {
+            "group_id": groupId,
+            "key": proxyKey
+        }
+        console.log("param")
+        console.log(param)
+        bridge.send("VKWebAppAllowMessagesFromGroup", param)
+            .then((r) => {
                 if(r.result){
                     if(settings.vk_pixel){
                         !function(){
@@ -167,6 +174,8 @@ const SimpleVkLandingContainer = (props) => {
                         }()
                     }
                     props.sendStats(props.accessToken, props.landing.id, props.landing.project_id)
+                    console.log("props.isCurrentlySubscribed")
+                    console.log(props.isCurrentlySubscribed)
                     fetch(Domain.url + '/vk_subscribe', {
                         method: 'POST',
                         headers: {
@@ -179,7 +188,8 @@ const SimpleVkLandingContainer = (props) => {
                             'proxy_id': props.proxy.id,
                             'phone': phone,
                             'email': email,
-                            'name_from_ml':name
+                            'name_from_ml':name,
+                            'is_currently_subscribed': props.isCurrentlySubscribed
                         })
                     }).then(function (response) {
                         document.getElementById('message-button').click();
