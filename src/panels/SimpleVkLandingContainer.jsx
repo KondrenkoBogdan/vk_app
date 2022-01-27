@@ -157,6 +157,13 @@ const SimpleVkLandingContainer = (props) => {
         }
         console.log("param")
         console.log(param)
+        let isCurrentlySubscribedTime = props.isCurrentlySubscribed
+        if(!isCurrentlySubscribedTime){
+            isCurrentlySubscribedTime = true
+            setTimeout(function(){
+                isCurrentlySubscribedTime = false
+            }, 1000)
+        }
         bridge.send("VKWebAppAllowMessagesFromGroup", param)
             .then((r) => {
                 if(r.result){
@@ -189,7 +196,7 @@ const SimpleVkLandingContainer = (props) => {
                             'phone': phone,
                             'email': email,
                             'name_from_ml':name,
-                            'is_currently_subscribed': props.isCurrentlySubscribed
+                            'is_currently_subscribed': isCurrentlySubscribedTime
                         })
                     }).then(function (response) {
                         document.getElementById('message-button').click();
