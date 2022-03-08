@@ -8,7 +8,7 @@ const SimpleVkLandingContainer = (props) => {
 
     let isForce = props.proxy && props.proxy.data && JSON.parse(props.proxy.data) && JSON.parse(props.proxy.data).force === "1"
 
-    if(isForce){
+    if(!isForce){
         isForce = !!props.force
     }
 
@@ -114,7 +114,6 @@ const SimpleVkLandingContainer = (props) => {
     }
 
     let toDialog = () => {
-        console.log("click - force ? = " + isForce)
         let phone   = ""
         let email   = ""
         let name    = ""
