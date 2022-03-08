@@ -8,6 +8,10 @@ const SimpleVkLandingContainer = (props) => {
 
     let isForce = props.proxy && props.proxy.data && JSON.parse(props.proxy.data) && JSON.parse(props.proxy.data).force === "1"
 
+    if(isForce){
+        isForce = !!props.force
+    }
+
     useEffect(function(){
         if(!props.phone){
             initPhoneInput()
