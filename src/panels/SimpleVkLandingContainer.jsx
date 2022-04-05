@@ -167,45 +167,62 @@ const SimpleVkLandingContainer = (props) => {
                 isCurrentlySubscribedTime = false
             }, 1000)
         }
-        bridge.send("VKWebAppAllowMessagesFromGroup", param)
-            .then((r) => {
-                if(r.result){
-                    if(settings.vk_pixel){
-                        !function(){
-                            var t=document.createElement("script");
-                            t.type="text/javascript";
-                            t.async=!0;
-                            t.src="https://vk.com/js/api/openapi.js?168";
-                            t.onload=function(){
-                                VK.Retargeting.Event("Subscribe")
-                                VK.Goal("conversion")
-                            };
-                            document.head.appendChild(t)
-                        }()
-                    }
-                    props.sendStats(props.accessToken, props.landing.id, props.landing.project_id)
-                    console.log("props.isCurrentlySubscribed")
-                    console.log(props.isCurrentlySubscribed)
-                    fetch(Domain.url + '/vk_subscribe', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            'type': 'message_allow',
-                            'user_id': new URL(window.location).searchParams.get("vk_user_id"),
-                            'group_id': props.vkGroup.group,
-                            'proxy_id': props.proxy.id,
-                            'phone': phone,
-                            'email': email,
-                            'name_from_ml':name,
-                            'is_currently_subscribed': isCurrentlySubscribedTime
-                        })
-                    }).then(function (response) {
-                        document.getElementById('message-button').click();
-                    });
-                }
+
+        fetch(Domain.url + '/fast_update_proxy', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'type': 'message_allow',
+                'user_id': new URL(window.location).searchParams.get("vk_user_id"),
+                'group_id': props.vkGroup.group,
+                'proxy_id': props.proxy.id,
+                'phone': phone,
+                'email': email,
+                'name_from_ml':name
             })
+        }).then(function (response) {
+            bridge.send("VKWebAppAllowMessagesFromGroup", param)
+                .then((r) => {
+                    if(r.result){
+                        if(settings.vk_pixel){
+                            !function(){
+                                var t=document.createElement("script");
+                                t.type="text/javascript";
+                                t.async=!0;
+                                t.src="https://vk.com/js/api/openapi.js?168";
+                                t.onload=function(){
+                                    VK.Retargeting.Event("Subscribe")
+                                    VK.Goal("conversion")
+                                };
+                                document.head.appendChild(t)
+                            }()
+                        }
+                        props.sendStats(props.accessToken, props.landing.id, props.landing.project_id)
+                        console.log("props.isCurrentlySubscribed")
+                        console.log(props.isCurrentlySubscribed)
+                        fetch(Domain.url + '/vk_subscribe', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                'type': 'message_allow',
+                                'user_id': new URL(window.location).searchParams.get("vk_user_id"),
+                                'group_id': props.vkGroup.group,
+                                'proxy_id': props.proxy.id,
+                                'phone': phone,
+                                'email': email,
+                                'name_from_ml':name,
+                                'is_currently_subscribed': isCurrentlySubscribedTime
+                            })
+                        }).then(function (response) {
+                            document.getElementById('message-button').click();
+                        });
+                    }
+                })
+        });
     }
 
     let adminEdit = () => {
